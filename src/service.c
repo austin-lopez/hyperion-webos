@@ -458,6 +458,8 @@ static bool videooutput_callback(LSHandle* sh __attribute__((unused)), LSMessage
             INFO("videooutput_callback: hdrType: %s --> HDR10+ mode", hdr_type_str);
         } else if (strcmp(hdr_type_str, "hlg") == 0) {
             INFO("videooutput_callback: hdrType: %s --> HLG mode", hdr_type_str);
+        } else {
+            WARN("videooutput_callback: hdrType: %s --> Unknown HDR mode", hdr_type_str);
         }
     }
 
@@ -524,6 +526,8 @@ static bool picture_callback(LSHandle* sh __attribute__((unused)), LSMessage* ms
             INFO("picture_callback: dynamicRange: %s --> HDR10+ mode", dynamic_range_str);
         } else if (strcmp(dynamic_range_str, "hlg") == 0) {
             INFO("picture_callback: dynamicRange: %s --> HLG mode", dynamic_range_str);
+        } else {
+            WARN("picture_callback: dynamicRange: %s --> Unknown HDR mode", dynamic_range_str);
         }
     }
 
