@@ -450,7 +450,7 @@ static bool videooutput_callback(LSHandle* sh __attribute__((unused)), LSMessage
         INFO("videooutput_callback: hdrType: %s --> HDR mode", hdr_type_str);
         hdr_enabled = true;
 
-        if (strcmp(hdr_type_str, "dolby_vision") == 0) {
+        if (strcmp(hdr_type_str, "DolbyVision") == 0) {
             INFO("videooutput_callback: hdrType: %s --> Dolby Vision mode", hdr_type_str);
         } else if (strcmp(hdr_type_str, "hdr10") == 0) {
             INFO("videooutput_callback: hdrType: %s --> HDR10 mode", hdr_type_str);
@@ -518,7 +518,7 @@ static bool picture_callback(LSHandle* sh __attribute__((unused)), LSMessage* ms
         INFO("picture_callback: dynamicRange: %s --> HDR mode", dynamic_range_str);
         hdr_enabled = true;
 
-        if (strcmp(dynamic_range_str, "dolby_vision") == 0) {
+        if (strcmp(dynamic_range_str, "DolbyVision") == 0) {
             INFO("picture_callback: dynamicRange: %s --> Dolby Vision mode", dynamic_range_str);
         } else if (strcmp(dynamic_range_str, "hdr10") == 0) {
             INFO("picture_callback: dynamicRange: %s --> HDR10 mode", dynamic_range_str);
