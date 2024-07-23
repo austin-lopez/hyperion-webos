@@ -2,6 +2,9 @@
 
 #define MAX_RESPONSE_BUF_SZ (1024 * 8)
 
+#define LUT_TABLE_FILENAME_HDR "lut_lin_tables_hdr.3d"
+#define LUT_TABLE_FILENAME_DV "lut_lin_tables_dv.3d"
+
 AmbientLightingDaemon daemon_flavor = DAEMON_NOT_SET;
 
 const char* daemon_to_string(AmbientLightingDaemon flavor)
@@ -201,49 +204,58 @@ int set_hdr_state(char* host, ushort rpc_port, bool hdr_active)
     return ret;
 }
 
-int set_hdr_mode(char* host, ushort rpc_port, const char* hdr_type)
+int set_hdr_mode(char* host, ushort rpc_port, bool hdr_active, const char* hdr_type)
 {
     int ret = 0;
-    const char* lut_filename = NULL;
-    int hdr_enabled = 0;
-
-    if (strcmp(hdr_type, "none") == 0) {
-        hdr_enabled = 0;
-    } else {
-        hdr_enabled = 1;
-        if (strcmp(hdr_type, "DolbyVision") == 0) {
-            lut_filename = "lut_lin_tables_dv.3d";
-        } else {
-            lut_filename = "lut_lin_tables_hdr.3d";
-        }
-    }
+    char* lut_filename = NULL;
 
     if (daemon_flavor == DAEMON_NOT_SET || daemon_flavor == DAEMON_INVALID) {
-        DBG("set_hdr_mode: Currently known daemon flavor: %d (%s) -> Fetching new state",
+        DBG("set_hdr_state: Currently known daemon flavor: %d (%s) -> Fetching new state",
             daemon_flavor, daemon_to_string(daemon_flavor));
         if ((ret = get_daemon_flavor(host, rpc_port, &daemon_flavor)) != 0) {
-            ERR("set_hdr_mode: Failed to fetch daemon flavor, ret: %d", ret);
+            ERR("set_hdr_state: Failed to fetch daemon flavor, ret: %d", ret);
             return -1;
         }
         INFO("Detected daemon flavor: %d (%s)", daemon_flavor, daemon_to_string(daemon_flavor));
     }
 
     if (daemon_flavor != DAEMON_HYPERHDR) {
-        WARN("set_hdr_mode: Daemon is not HyperHDR -> Not submitting HDR mode!");
+        WARN("set_hdr_state: Daemon is not HyperHDR -> Not submitting HDR state!");
         return -2;
     }
 
     jvalue_ref response_body_jval;
     jvalue_ref post_body = jobject_create();
+    
+    if (hdr_active) {
+        if (strcmp(hdr_type, "DolbyVision") == 0) {
+            INFO("set_hdr_mode: DolbyVision HDR mode");
+            lut_filename = LUT_TABLE_FILENAME_DV;
+        } else if (strcmp(hdr_type, "HDR") == 0) {
+            INFO("set_hdr_mode: HDR mode");
+            lut_filename = LUT_TABLE_FILENAME_HDR;
+        } else if (strcmp(hdr_type, "HDR10") == 0) {
+            INFO("set_hdr_mode: HDR10 mode");
+            lut_filename = LUT_TABLE_FILENAME_HDR;
+        } else {
+            WARN("set_hdr_mode: Invalid HDR type: %s", hdr_type);
+            lut_filename = LUT_TABLE_FILENAME_HDR;
+        }
+    }
+    
+    //{
+    //    "command":"videomodehdr",
+    //    "HDR":0/1,
+    //    "flatbuffers_user_lut_filename":"lut_filename"
+    //}
 
     jobject_set(post_body, j_cstr_to_buffer("command"), jstring_create("videomodehdr"));
-    jobject_set(post_body, j_cstr_to_buffer("HDR"), jnumber_create_i32(hdr_enabled));
-    if (lut_filename) {
-        jobject_set(post_body, j_cstr_to_buffer("flatbuffers_user_lut_filename"), jstring_create(lut_filename));
-    }
+    jobject_set(post_body, j_cstr_to_buffer("HDR"), jboolean_create(hdr_active));
+    jobject_set(post_body, j_cstr_to_buffer("flatbuffers_user_lut_filename"), jstring_create(lut_filename));
+
 
     if ((ret = send_rpc_message(host, rpc_port, post_body, &response_body_jval)) != 0) {
-        WARN("set_hdr_mode: Failed to send RPC message, code: %d", ret);
+        WARN("set_hdr_state: Failed to send RPC message, code: %d", ret);
         ret = -3;
     }
 
