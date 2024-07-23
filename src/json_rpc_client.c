@@ -226,7 +226,7 @@ int set_hdr_mode(char* host, ushort rpc_port, bool hdr_active, const char* hdr_t
 
     jvalue_ref response_body_jval;
     jvalue_ref post_body = jobject_create();
-    
+
     if (hdr_active) {
         if (strcmp(hdr_type, "DolbyVision") == 0) {
             INFO("set_hdr_mode: DolbyVision HDR mode");
@@ -242,7 +242,7 @@ int set_hdr_mode(char* host, ushort rpc_port, bool hdr_active, const char* hdr_t
             lut_filename = LUT_TABLE_FILENAME_HDR;
         }
     }
-    
+
     jobject_set(post_body, j_cstr_to_buffer("command"), jstring_create("videomodehdr"));
     jobject_set(post_body, j_cstr_to_buffer("HDR"), jboolean_create(hdr_active));
     jobject_set(post_body, j_cstr_to_buffer("flatbuffers_user_lut_filename"), jstring_create(lut_filename));
