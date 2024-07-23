@@ -439,33 +439,12 @@ static bool videooutput_callback(LSHandle* sh __attribute__((unused)), LSMessage
         return false;
     }
 
-    bool hdr_enabled;
     raw_buffer hdr_type_buf = jstring_get(hdr_type_ref);
     const char* hdr_type_str = hdr_type_buf.m_str;
 
-    if (strcmp(hdr_type_str, "none") == 0) {
-        INFO("videooutput_callback: hdrType: %s --> SDR mode", hdr_type_str);
-        hdr_enabled = false;
-    } else {
-        INFO("videooutput_callback: hdrType: %s --> HDR mode", hdr_type_str);
-        hdr_enabled = true;
-
-        if (strcmp(hdr_type_str, "DolbyVision") == 0) {
-            INFO("videooutput_callback: hdrType: %s --> Dolby Vision mode", hdr_type_str);
-        } else if (strcmp(hdr_type_str, "hdr10") == 0) {
-            INFO("videooutput_callback: hdrType: %s --> HDR10 mode", hdr_type_str);
-        } else if (strcmp(hdr_type_str, "hdr10_plus") == 0) {
-            INFO("videooutput_callback: hdrType: %s --> HDR10+ mode", hdr_type_str);
-        } else if (strcmp(hdr_type_str, "hlg") == 0) {
-            INFO("videooutput_callback: hdrType: %s --> HLG mode", hdr_type_str);
-        } else {
-            WARN("videooutput_callback: hdrType: %s --> Unknown HDR mode", hdr_type_str);
-        }
-    }
-
-    int ret = set_hdr_state(service->settings->unix_socket ? "127.0.0.1" : service->settings->address, RPC_PORT, hdr_enabled);
+    int ret = set_hdr_mode(service->settings->unix_socket ? "127.0.0.1" : service->settings->address, RPC_PORT, hdr_type_str);
     if (ret != 0) {
-        ERR("videooutput_callback: set_hdr_state failed, ret: %d", ret);
+        ERR("videooutput_callback: set_hdr_mode failed, ret: %d", ret);
     }
 
     jstring_free_buffer(hdr_type_buf);
@@ -507,33 +486,12 @@ static bool picture_callback(LSHandle* sh __attribute__((unused)), LSMessage* ms
         return false;
     }
 
-    bool hdr_enabled;
     raw_buffer dynamic_range_buf = jstring_get(dynamic_range_ref);
     const char* dynamic_range_str = dynamic_range_buf.m_str;
 
-    if (strcmp(dynamic_range_str, "sdr") == 0) {
-        INFO("picture_callback: dynamicRange: %s --> SDR mode", dynamic_range_str);
-        hdr_enabled = false;
-    } else {
-        INFO("picture_callback: dynamicRange: %s --> HDR mode", dynamic_range_str);
-        hdr_enabled = true;
-
-        if (strcmp(dynamic_range_str, "DolbyVision") == 0) {
-            INFO("picture_callback: dynamicRange: %s --> Dolby Vision mode", dynamic_range_str);
-        } else if (strcmp(dynamic_range_str, "hdr10") == 0) {
-            INFO("picture_callback: dynamicRange: %s --> HDR10 mode", dynamic_range_str);
-        } else if (strcmp(dynamic_range_str, "hdr10_plus") == 0) {
-            INFO("picture_callback: dynamicRange: %s --> HDR10+ mode", dynamic_range_str);
-        } else if (strcmp(dynamic_range_str, "hlg") == 0) {
-            INFO("picture_callback: dynamicRange: %s --> HLG mode", dynamic_range_str);
-        } else {
-            WARN("picture_callback: dynamicRange: %s --> Unknown HDR mode", dynamic_range_str);
-        }
-    }
-
-    int ret = set_hdr_state(service->settings->unix_socket ? "127.0.0.1" : service->settings->address, RPC_PORT, hdr_enabled);
+    int ret = set_hdr_mode(service->settings->unix_socket ? "127.0.0.1" : service->settings->address, RPC_PORT, dynamic_range_str);
     if (ret != 0) {
-        ERR("videooutput_callback: set_hdr_state failed, ret: %d", ret);
+        ERR("picture_callback: set_hdr_mode failed, ret: %d", ret);
     }
 
     jstring_free_buffer(dynamic_range_buf);
