@@ -231,7 +231,7 @@ int set_hdr_mode(char* host, ushort rpc_port, bool hdr_active, const char* hdr_t
     jobject_set(post_body, j_cstr_to_buffer("HDR"), jnumber_create_i32(hdr_enabled));
 
     if (hdr_active) {
-        if (strcmp(hdr_type, "DolbyVision") == 0 || strcmp(hdr_type, "dolbyHdr") == 0{
+        if (strcmp(hdr_type, "DolbyVision") == 0 || strcmp(hdr_type, "dolbyHdr") == 0) {
             INFO("set_hdr_mode: DolbyVision HDR mode");
             lut_filename = LUT_TABLE_FILENAME_DV;
         } else if (strcmp(hdr_type, "HDR") == 0 || strcmp(hdr_type, "HDR10") == 0 || strcmp(hdr_type, "hdr10") == 0 || strcmp(hdr_type, "hdr") == 0) {
