@@ -208,6 +208,7 @@ int set_hdr_mode(char* host, ushort rpc_port, bool hdr_active, const char* hdr_t
 {
     int ret = 0;
     char* lut_filename = NULL;
+    int hdr_enabled = 0;
 
     if (daemon_flavor == DAEMON_NOT_SET || daemon_flavor == DAEMON_INVALID) {
         DBG("set_hdr_state: Currently known daemon flavor: %d (%s) -> Fetching new state",
@@ -227,9 +228,10 @@ int set_hdr_mode(char* host, ushort rpc_port, bool hdr_active, const char* hdr_t
     jvalue_ref response_body_jval;
     jvalue_ref post_body = jobject_create();
     jobject_set(post_body, j_cstr_to_buffer("command"), jstring_create("videomodehdr"));
-    jobject_set(post_body, j_cstr_to_buffer("HDR"), jboolean_create(hdr_active));
+
 
     if (hdr_active) {
+        hdr_enabled = 1;
         if (strcmp(hdr_type, "DolbyVision") == 0) {
             INFO("set_hdr_mode: DolbyVision HDR mode");
             lut_filename = LUT_TABLE_FILENAME_DV;
