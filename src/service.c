@@ -449,17 +449,6 @@ static bool videooutput_callback(LSHandle* sh __attribute__((unused)), LSMessage
     } else {
         INFO("videooutput_callback: hdrType: %s --> HDR mode", hdr_type_str);
         hdr_enabled = true;
-        if (strcmp(hdr_type_str, "DolbyVision") == 0) {
-            INFO("videooutput_callback: hdrType: %s --> Dolby Vision mode", hdr_type_str);
-        } else if (strcmp(hdr_type_str, "hdr10") == 0) {
-            INFO("videooutput_callback: hdrType: %s --> HDR10 mode", hdr_type_str);
-        } else if (strcmp(hdr_type_str, "hdr10_plus") == 0) {
-            INFO("videooutput_callback: hdrType: %s --> HDR10+ mode", hdr_type_str);
-        } else if (strcmp(hdr_type_str, "hlg") == 0) {
-            INFO("videooutput_callback: hdrType: %s --> HLG mode", hdr_type_str);
-        } else {
-            WARN("videooutput_callback: hdrType: %s --> Unknown HDR mode", hdr_type_str);
-        }
     }
 
     int ret = set_hdr_mode(service->settings->unix_socket ? "127.0.0.1" : service->settings->address, RPC_PORT, hdr_enabled, hdr_type_str);
@@ -516,18 +505,6 @@ static bool picture_callback(LSHandle* sh __attribute__((unused)), LSMessage* ms
     } else {
         INFO("picture_callback: dynamicRange: %s --> HDR mode", dynamic_range_str);
         hdr_enabled = true;
-
-        if (strcmp(dynamic_range_str, "DolbyVision") == 0) {
-            INFO("picture_callback: dynamicRange: %s --> Dolby Vision mode", dynamic_range_str);
-        } else if (strcmp(dynamic_range_str, "hdr10") == 0) {
-            INFO("picture_callback: dynamicRange: %s --> HDR10 mode", dynamic_range_str);
-        } else if (strcmp(dynamic_range_str, "hdr10_plus") == 0) {
-            INFO("picture_callback: dynamicRange: %s --> HDR10+ mode", dynamic_range_str);
-        } else if (strcmp(dynamic_range_str, "hlg") == 0) {
-            INFO("picture_callback: dynamicRange: %s --> HLG mode", dynamic_range_str);
-        } else {
-            WARN("picture_callback: dynamicRange: %s --> Unknown HDR mode", dynamic_range_str);
-        }
     }
 
     int ret = set_hdr_mode(service->settings->unix_socket ? "127.0.0.1" : service->settings->address, RPC_PORT, hdr_enabled, dynamic_range_str);
