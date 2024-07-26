@@ -231,23 +231,15 @@ int set_hdr_mode(char* host, ushort rpc_port, bool hdr_active, const char* hdr_t
     jobject_set(post_body, j_cstr_to_buffer("HDR"), jnumber_create_i32(hdr_enabled));
 
     if (hdr_active) {
-        switch (hdr_type) {
-            case "DolbyVision":
-            case "dolbyHdr":
-                INFO("set_hdr_mode: DolbyVision HDR mode");
-                lut_filename = LUT_TABLE_FILENAME_DV;
-                break;
-            case "HDR":
-            case "HDR10":
-            case "hdr10":
-            case "hdr":
-                INFO("set_hdr_mode: HDR/HDR10 mode");
-                lut_filename = LUT_TABLE_FILENAME_HDR;
-                break;
-            default:
-                WARN("set_hdr_mode: Invalid HDR type: %s, defaulting to HDR LUT", hdr_type);
-                lut_filename = LUT_TABLE_FILENAME_HDR;
-                break;
+        if (strcmp(hdr_type, "DolbyVision") == 0 || strcmp(hdr_type, "dolbyHdr") == 0) {
+            INFO("set_hdr_mode: DolbyVision HDR mode");
+            lut_filename = LUT_TABLE_FILENAME_DV;
+        } else if (strcmp(hdr_type, "HDR") == 0 || strcmp(hdr_type, "HDR10") == 0 || strcmp(hdr_type, "hdr10") == 0 || strcmp(hdr_type, "hdr") == 0) {
+            INFO("set_hdr_mode: HDR/HDR10 mode");
+            lut_filename = LUT_TABLE_FILENAME_HDR;
+        } else {
+            WARN("set_hdr_mode: Invalid HDR type: %s", hdr_type);
+            lut_filename = LUT_TABLE_FILENAME_HDR;
         }
         jobject_set(post_body, j_cstr_to_buffer("flatbuffers_user_lut_filename"), jstring_create(lut_filename));
     }
