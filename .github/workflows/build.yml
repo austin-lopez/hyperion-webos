@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-  workflow_dispatch:  # Позволяет запускать workflow вручную
+  workflow_dispatch:
   
 env:
   TOOLCHAIN_URL: https://github.com/openlgtv/buildroot-nc4/releases/download/webos-d7ed7ee/arm-webos-linux-gnueabi_sdk-buildroot.tar.gz
