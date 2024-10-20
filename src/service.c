@@ -446,9 +446,18 @@ static bool videooutput_callback(LSHandle* sh __attribute__((unused)), LSMessage
     if (strcmp(hdr_type_str, "none") == 0) {
         INFO("videooutput_callback: hdrType: %s --> SDR mode", hdr_type_str);
         hdr_enabled = false;
-    } else {
+    }
+    else if (strcmp(hdr_type_str, "HDR10") == 0) {
+       INFO("videooutput_callback: hdrType: %s --> HDR mode", hdr_type_str);
+        hdr_enabled = true;
+    }
+    else if (strcmp(hdr_type_str, "DolbyVision") == 0) {
         INFO("videooutput_callback: hdrType: %s --> HDR mode", hdr_type_str);
         hdr_enabled = true;
+    }
+    else {
+       INFO("videooutput_callback: hdrType: %s --> HDR mode", hdr_type_str);
+        hdr_enabled = false;
     }
 
     int ret = set_hdr_mode(service->settings->unix_socket ? "127.0.0.1" : service->settings->address, RPC_PORT, hdr_enabled, hdr_type_str);
